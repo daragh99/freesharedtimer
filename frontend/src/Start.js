@@ -18,8 +18,7 @@ function Start (props) {
   const [slug, setSlug] = useState('origin');
 
   const handleClick = () => {
-    console.log("%s %s", slug, intervalSeconds);
-    const msg = toggleRunningMessage(running, intervalSeconds, Date.now());
+    const msg = toggleRunningMessage(!running, intervalSeconds, Date.now());
     console.log(msg);
     ws.send(JSON.stringify(msg));
     setRunning(!running);

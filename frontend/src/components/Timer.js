@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components';
 import styles from '../styles/variables';
 import beep from '../assets/beep.mp3';
+import withWebSocket from '../withWebSocket';
 
 const Wrapper = styled.div`
   font-family: ${styles.fonts.serifPrimary};
@@ -17,30 +18,59 @@ const Wrapper = styled.div`
 `;
 
 function Timer(props) {
-  const { running, intervalSeconds } = props;  
+  const { ws } = props;  
   const audioRef = useRef();
-  const [secondsLeft, setSecondsLeft] = useState(intervalSeconds);
-  var timeout;
+
+  const timer = useRef();
+
+
+  const [secondsLeft, setSecondsLeft] = useState(0);
+  const [running, setRunning] = useState(false);
+  const [intervalSeconds, setIntervalSeconds] = useState(0);
+  const [lastTimeStamp, setLastTimeStamp] = useState(0);
+  
+  ws.onopen = function() {
+    ws.send('join');
+  };
+
+  ws.onmessage = function (event) {
+    console.log('processing message');
+    console.log(event.data);
+    let data = null;
+     try {
+       data = JSON.parse(event.data);
+     } catch(e) {
+       console.log("couldn't parse %s", event.data);
+     }
+    if(data === null) return;
+
+    const { runningState, intervalSeconds, timestamp } = data;
+    console.log('%s %s %d', runningState, intervalSeconds, timestamp);
+    console.log(timestamp);
+    setRunning(runningState);
+    setLastTimeStamp(timestamp);
+    setIntervalSeconds(intervalSeconds);
+  }
+
+  useEffect(() => {
+    if(secondsLeft === 0) {
+      audioRef.current && audioRef.current.play();
+    }
+  }, [secondsLeft]);
+
+  useEffect(() => {
+    timer.current = setTimeout(() => {
+      const now = Date.now();
+      const left = intervalSeconds - Math.round((now - lastTimeStamp)/1000) % intervalSeconds;
+      console.log(left);
+      if(!isNaN(left) && running) setSecondsLeft(left);
+      else setSecondsLeft(intervalSeconds);
+    }, 1000);
+  });
 
   useEffect(() => {
     
-    timeout = setTimeout(() => {
-      if(running) {
-        var remaining = secondsLeft - 1;
-        if(remaining === 0) {
-          audioRef.current && audioRef.current.play();
-        }
-        if(remaining < 0 || isNaN(remaining)) {
-          setSecondsLeft(intervalSeconds);
-        }
-        else setSecondsLeft(remaining);
-      }
-      else {
-        setSecondsLeft(intervalSeconds);
-      }
-    }, 1000);
-  
-  });
+  }, [lastTimeStamp]);
 
   return (
     <Wrapper>
@@ -51,4 +81,4 @@ function Timer(props) {
 
 }
 
-export default Timer;
+export default withWebSocket(Timer);

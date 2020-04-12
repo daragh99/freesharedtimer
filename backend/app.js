@@ -31,16 +31,16 @@ function handleMessage(payload, ws) {
   console.dir(payload, { depth: null });
   switch(payload.message) {
     case 'toggle_running_state': 
-      toggleRunningState();
+      setRunningState(payload.running);
       setIntervalSeconds(payload.intervalSeconds);
-      setLastTimestamp(payload.timestamp);
+      setLastTimestamp(Date.now());
       wss.clients.forEach(function each(client) {
         if (client !== ws && client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify({ 
             message:'toggle_running_state',
             runningState,
-            intervalSeconds: payload.intervalSeconds,
-            timestamp: payload.timestamp,
+            intervalSeconds,
+            timestamp: lastTimeStamp,
           }));
         }
       });
@@ -66,8 +66,8 @@ function joinSession(ws) {
 }
 
 
-function toggleRunningState() {
-  runningState = !runningState;
+function setRunningState(rs) {
+  runningState = rs;
 }
 
 function setLastTimestamp(timestamp) {
