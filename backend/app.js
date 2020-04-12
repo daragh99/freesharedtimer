@@ -37,7 +37,7 @@ function handleMessage(payload, ws) {
       wss.clients.forEach(function each(client) {
         if (client !== ws && client.readyState === WebSocket.OPEN) {
           client.send(JSON.stringify({ 
-            message:'toggle_running_state',
+            message:'current_running_state',
             runningState,
             intervalSeconds,
             timestamp: lastTimeStamp,
@@ -59,8 +59,8 @@ function joinSession(ws) {
   const message = {
     message: 'current_running_state',
     runningState,
-    intervalSeconds: intervalSeconds,
-    lastTimeStamp: lastTimeStamp,
+    intervalSeconds,
+    timestamp: lastTimeStamp,
   }
   ws.send(JSON.stringify(message));
 }

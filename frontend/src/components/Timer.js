@@ -53,7 +53,7 @@ function Timer(props) {
   }
 
   useEffect(() => {
-    if(secondsLeft === 0) {
+    if(secondsLeft === intervalSeconds) {
       audioRef.current && audioRef.current.play();
     }
   }, [secondsLeft]);
@@ -61,22 +61,21 @@ function Timer(props) {
   useEffect(() => {
     timer.current = setTimeout(() => {
       const now = Date.now();
-      const left = intervalSeconds - Math.round((now - lastTimeStamp)/1000) % intervalSeconds;
-      console.log(left);
+      console.log(lastTimeStamp);
+      const left = intervalSeconds - (Math.round((now - lastTimeStamp)/1000) % intervalSeconds);
       if(!isNaN(left) && running) setSecondsLeft(left);
       else setSecondsLeft(intervalSeconds);
     }, 1000);
   });
 
-  useEffect(() => {
-    
-  }, [lastTimeStamp]);
-
   return (
-    <Wrapper>
-      {secondsLeft}
-      <audio ref={audioRef} src={beep} controls={false} autoPlay={false}/>
-    </Wrapper>
+    <>
+      <Wrapper>
+        {secondsLeft}
+        <audio ref={audioRef} src={beep} controls={false} autoPlay={false}/>
+      </Wrapper>
+      <button onClick={(e) => setRunning(!running)} >{running ? 'Stop' : 'Start'}</button>
+    </>
   )
 
 }

@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import withWebSocket from './withWebSocket'
 import toggleRunningMessage from './Messages'
+import Join from './Join.js';
 
 function Start (props) {
   const { ws } = props;
@@ -25,11 +26,14 @@ function Start (props) {
   };
 
   return (
+    <>
       <div>
         <input type="number" value={intervalSeconds} onChange={(e) => setIntervalSeconds(e.target.value)}/>
         <button value="start" onClick={handleClick} >{running ? 'Stop' : 'Start'}</button>
       </div>
-    );  
+      <Join/>
+    </>
+  );  
 }
 
 export default withWebSocket(Start);
