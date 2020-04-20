@@ -45,15 +45,14 @@ function Timer(props) {
     if(data === null) return;
 
     const { runningState, intervalSeconds, timestamp } = data;
-    console.log('%s %s %d', runningState, intervalSeconds, timestamp);
-    console.log(timestamp);
     setRunning(runningState);
     setLastTimeStamp(timestamp);
     setIntervalSeconds(intervalSeconds);
+    printState();
   }
 
   useEffect(() => {
-    if(secondsLeft === intervalSeconds) {
+    if(secondsLeft === intervalSeconds || secondsLeft === 0) {
       audioRef.current && audioRef.current.play();
     }
   }, [secondsLeft]);
@@ -61,13 +60,15 @@ function Timer(props) {
   useEffect(() => {
     timer.current = setTimeout(() => {
       const now = Date.now();
-      console.log(lastTimeStamp);
       const left = intervalSeconds - (Math.round((now - lastTimeStamp)/1000) % intervalSeconds);
       if(!isNaN(left) && running) setSecondsLeft(left);
       else setSecondsLeft(intervalSeconds);
     }, 1000);
   });
 
+  const printState = () => {
+    console.log ("running: %s lastTimeStamp: %s interval: %d", running, lastTimeStamp, intervalSeconds);
+  }
   return (
     <>
       <Wrapper>
