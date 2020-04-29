@@ -44,18 +44,23 @@ function handleMessage(payload, ws) {
           }));
         }
       });
+      printState();
       break;
     default:
       break;
   }
 }
 
+function printState() {
+  console.log ("running: %s lastTimeStamp: %s interval: %d", runningState, lastTimeStamp, intervalSeconds);
+}
 
 var runningState = false;
 var lastTimeStamp = 0;
 var intervalSeconds = 30;
 
 function joinSession(ws) {
+  printState();
   const message = {
     message: 'current_running_state',
     runningState,
