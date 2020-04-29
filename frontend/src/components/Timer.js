@@ -2,7 +2,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components';
 import styles from '../styles/variables';
 import beep from '../assets/beep.mp3';
-import withWebSocket from '../withWebSocket';
+import withWebSocket from './hoc/withWebSocket';
+import Button from './Button';
 
 const Wrapper = styled.div`
   font-family: ${styles.fonts.serifPrimary};
@@ -11,8 +12,8 @@ const Wrapper = styled.div`
   font-size: 80px;
   color: ${styles.colors.roseMadder};
   padding: 28px;
-  border: 1px solid ${styles.colors.roseMadder};
-  border-radius: 4px;
+  border: 1px solid ${styles.colors.paleSilver};
+  border-radius: 8px;
   margin:auto;
   width: 248px;
 `;
@@ -26,6 +27,7 @@ function Timer(props) {
 
   const [secondsLeft, setSecondsLeft] = useState(0);
   const [running, setRunning] = useState(false);
+  const [mute, setMute] = useState(false);
   const [intervalSeconds, setIntervalSeconds] = useState(0);
   const [lastTimeStamp, setLastTimeStamp] = useState(0);
   
@@ -52,7 +54,8 @@ function Timer(props) {
   }
 
   useEffect(() => {
-    if(secondsLeft === intervalSeconds || secondsLeft === 0) {
+    if((secondsLeft == intervalSeconds || secondsLeft === 0) && !mute) {
+      console.log('beep!');
       audioRef.current && audioRef.current.play();
     }
   }, [secondsLeft]);
@@ -75,7 +78,7 @@ function Timer(props) {
         {secondsLeft}
         <audio ref={audioRef} src={beep} controls={false} autoPlay={false}/>
       </Wrapper>
-      <button onClick={(e) => setRunning(!running)} >{running ? 'Stop' : 'Start'}</button>
+      <Button onClick={(e) => setMute(!mute)} displayText={mute ? 'Unmute' : 'Mute'}></Button>
     </>
   )
 

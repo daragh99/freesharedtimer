@@ -7,6 +7,6 @@ function sendStateMessage(running, intervalSeconds, timestamp) {
   }
 }
 
-export default toggleRunningMessage;
+export default sendStateMessage;
 
 

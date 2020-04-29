@@ -1,14 +1,12 @@
 import React from 'react';
 import logo from './assets/watch.png';
 import './App.css';
-import Start from './Start.js';
-import Join from './Join.js';
+import { Start, Join } from './components';
 
 import {
   BrowserRouter as Router,
   Switch,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 
 function App() {
@@ -17,10 +15,10 @@ function App() {
       <img src={logo} />
       <Router>
         <Switch>
-          <Route path="/start">
+          <Route path="/start/:slug">
             <Start />
           </Route>
-          <Route path="/join">
+          <Route path="/join/:slug">
             <Join />
           </Route>
         </Switch>

@@ -7,6 +7,9 @@ const styles = {
     roseMadder: '#D91E36',
     oldSilver: '#857885',
     caputMort: '#5B2333',
+    paleSilver: '#C0BCB5',
+    russianViolet: '#3C1742',
+
   },
 
   fonts: {
