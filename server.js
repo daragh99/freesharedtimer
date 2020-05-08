@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
 const path = require('path');
-const wsPort = 8080;
+const wsPort = process.env.WS_PORT || 8080;
 const wsPath = '/ws';
 
 
